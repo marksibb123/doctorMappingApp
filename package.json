@@ -1,0 +1,16 @@
+{
+  "name": "gp-search",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "start": "ultra -r start"
+  },
+  "devDependencies": {
+    "ultra-runner": "^3.10.5"
+  }
+}

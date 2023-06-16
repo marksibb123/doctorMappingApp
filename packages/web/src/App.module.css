@@ -1,0 +1,15 @@
+.navbar {
+  height: 60px;
+  background-color: white !important;
+}
+.brand {
+  line-height: 60px;
+  font-size: 1.25rem;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.mapContainer {
+  height: calc(100vh - 60px);
+  width: 100%;
+}
