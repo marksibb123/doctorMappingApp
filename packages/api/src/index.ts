@@ -49,7 +49,7 @@ export const runServer = async (): Promise<void> => {
             lng: parseFloat(lng as string),
           },
           keyword: "doctor",
-          key: "AIzaSyC2CmhUmpXIxkcQubwX42E1GqlJ_YgcjtU",
+          key: "AIzaSyAsAAL3BMBo8LL6WxoV4prixwkr6sq7wrQ",
           rankby: PlacesNearbyRanking.distance,
           type: "health",
         },
