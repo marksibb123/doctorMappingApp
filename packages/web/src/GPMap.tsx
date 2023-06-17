@@ -11,15 +11,14 @@ export const GPMap = () => {
     lat: 55.8627026,
     lng: -4.2460259,
   });
+  const [selectedGp, setSelectedGp] = useState<any | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+  const [gps, setGps] = useState<any | undefined>(undefined);
 
   const defaultMapParams = {
     center: defaultLocation,
     zoom: 10,
   };
-
-  const [selectedGp, setSelectedGp] = useState<any | undefined>(undefined);
-
-  const [gps, setGps] = useState<any | undefined>(undefined);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -40,37 +39,40 @@ export const GPMap = () => {
     );
     const gpsRaw = await gpsResponse.json();
     setGps(gpsRaw);
+    setLoading(false);
   }, [defaultLocation]);
 
   return (
     <>
-      <div style={{ display: "flex" }}>
-        <div style={{ flex: 1 }}>
-          {gps && (
-            <GoogleMapReact
-              bootstrapURLKeys={{
-                key: "AIzaSyAkMDHxwIxN_S9g1S1KzfUW4ZjEIq6uq5Q",
-              }}
-              defaultCenter={defaultLocation}
-              defaultZoom={defaultMapParams.zoom}
-            >
-              {console.log("LOCATION", gps)}
-              <UserIcon lat={defaultLocation.lat} lng={defaultLocation.lng} />
-              {gps.map((gp: any) => (
-                // due to several GPs being located in close area (medical centres typically), some are stacked
-                <GPMapIcon
-                  gp={gp}
-                  lat={gp.location.lat}
-                  lng={gp.location.lng}
-                  text={gp.name}
-                  isSelected={gp === selectedGp}
-                ></GPMapIcon>
-              ))}
-            </GoogleMapReact>
-          )}
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div style={{ display: "flex" }}>
+          <div style={{ flex: 1 }}>
+            {gps && (
+              <GoogleMapReact
+                bootstrapURLKeys={{
+                  key: "AIzaSyAkMDHxwIxN_S9g1S1KzfUW4ZjEIq6uq5Q",
+                }}
+                defaultCenter={defaultLocation}
+                defaultZoom={defaultMapParams.zoom}
+              >
+                <UserIcon lat={defaultLocation.lat} lng={defaultLocation.lng} />
+                {gps.map((gp: any) => (
+                  <GPMapIcon
+                    gp={gp}
+                    lat={gp.geometry.location.lat}
+                    lng={gp.geometry.location.lng}
+                    text={gp.name}
+                    isSelected={gp === selectedGp}
+                  />
+                ))}
+              </GoogleMapReact>
+            )}
+          </div>
+          {gps && <GPList gps={gps} selectGp={setSelectedGp} />}
         </div>
-        {gps && <GPList gps={gps} selectGp={setSelectedGp} />}
-      </div>
+      )}
     </>
   );
 };

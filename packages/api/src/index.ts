@@ -34,7 +34,31 @@ export const runServer = async (): Promise<void> => {
 
   const client = new Client({});
 
+
+  async function fetchPlaces(lat: number, lng: number, pageToken?: string, collectedPlaces: any[] = []): Promise<any[]> {
+    const response = await client.placesNearby({
+      params: {
+        location: { lat, lng },
+        keyword: "doctor",
+        key: "AIzaSyAkMDHxwIxN_S9g1S1KzfUW4ZjEIq6uq5Q",
+        rankby: PlacesNearbyRanking.distance,
+        type: "health",
+        pagetoken: pageToken,
+      },
+    });
+
+    collectedPlaces = collectedPlaces.concat(response.data.results);
+
+    if (response.data.next_page_token && collectedPlaces.length < 60) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      return fetchPlaces(lat, lng, response.data.next_page_token, collectedPlaces);
+    } else {
+      return collectedPlaces.slice(0, 60);
+    }
+  }
+
   router.get("/gps", async (ctx) => {
+    
     const { lat, lng } = ctx.request.query;
 
     if (!lat || !lng) {
@@ -42,26 +66,7 @@ export const runServer = async (): Promise<void> => {
     }
 
     try {
-      const placesResponse = await client.placesNearby({
-        params: {
-          location: {
-            lat: parseFloat(lat as string),
-            lng: parseFloat(lng as string),
-          },
-          keyword: "doctor",
-          key: "AIzaSyAsAAL3BMBo8LL6WxoV4prixwkr6sq7wrQ",
-          rankby: PlacesNearbyRanking.distance,
-          type: "health",
-        },
-      });
-
-      const places = placesResponse.data.results;
-      const gps = places.map((place) => ({
-        name: place.name,
-        address: place.vicinity,
-        location: place.geometry?.location,
-      }));
-
+      const gps = await fetchPlaces(parseFloat(lat as string), parseFloat(lng as string));
       ctx.body = gps;
     } catch (e) {
       console.error(JSON.stringify(e));
