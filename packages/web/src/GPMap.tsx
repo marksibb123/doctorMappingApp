@@ -14,8 +14,10 @@ export const GPMap = () => {
 
   const defaultMapParams = {
     center: defaultLocation,
-    zoom: 13,
+    zoom: 10,
   };
+
+  const [selectedGp, setSelectedGp] = useState<any | undefined>(undefined);
 
   const [gps, setGps] = useState<any | undefined>(undefined);
 
@@ -42,37 +44,75 @@ export const GPMap = () => {
   
   return (
     <>
-      {gps && (
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: "AIzaSyAsAAL3BMBo8LL6WxoV4prixwkr6sq7wrQ" }}
-          defaultCenter={defaultLocation}
-          defaultZoom={defaultMapParams.zoom}
-        >
-        {console.log('LOCATION', defaultLocation)}
-          <UserIcon
-            lat={defaultLocation.lat}
-            lng={defaultLocation.lng}
-          />
-          {gps.map((gp: any) => (
-            <GPMapIcon
-              gp={gp}
-              lat={gp.location.lat}
-              lng={gp.location.lng}
-              text={gp.name}
-            ></GPMapIcon>
-          ))}
-        </GoogleMapReact>
-      )}
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          {gps && (
+            <GoogleMapReact
+              bootstrapURLKeys={{ key: "AIzaSyAkMDHxwIxN_S9g1S1KzfUW4ZjEIq6uq5Q" }}
+              defaultCenter={defaultLocation}
+              defaultZoom={defaultMapParams.zoom}
+            >
+            {console.log('LOCATION', gps)}
+              <UserIcon
+                lat={defaultLocation.lat}
+                lng={defaultLocation.lng}
+              />
+              {gps.map((gp: any) => (
+                // due to several GPS being located in close area (medical centres typically), some are stacked
+                <GPMapIcon
+                  gp={gp}
+                  lat={gp.location.lat}
+                  lng={gp.location.lng}
+                  text={gp.name}
+                  isSelected={gp === selectedGp}
+                ></GPMapIcon>
+              ))}
+            </GoogleMapReact>
+          )}
+          </div>
+          {gps && <GPList gps={gps} selectGp={setSelectedGp} />}
+      </div>
     </>
   );
 };
 
-const GPMapIcon = ({ gp }: any) => {
+interface GPListProps {
+  gps: any[];
+  selectGp: (gp: any) => void;
+}
+
+
+const GPList: React.FC<GPListProps> = ({ gps, selectGp }) => (
+  <div style={{ 
+    flex: 1, 
+    maxHeight: '100vh', 
+    overflow: 'auto',
+    backgroundColor: '#f5f5f5',
+    padding: '1rem',
+    boxShadow: '0 0 10px rgba(0,0,0,0.15)'
+  }}>
+    <h2>GPS Locations</h2>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'start',
+    }}>
+      {gps.map((gp: any) => (
+        <button key={gp.location.lat} onClick={() => selectGp(gp)}>
+          {gp.name}
+        </button>
+      ))}
+    </div>
+  </div>
+);
+
+const GPMapIcon = ({ gp, isSelected }: any) => {
   return (
     <FontAwesomeIcon
       icon={faUserMd}
       size="2x"
       className={styles.mapIcon}
+      color={isSelected ? 'red' : undefined}
     ></FontAwesomeIcon>
   );
 };
