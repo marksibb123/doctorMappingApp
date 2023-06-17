@@ -30,7 +30,7 @@ export const GPMap = () => {
         });
       });
     } else {
-      alert('Geolocation is not supported by your browser.');
+      alert("Geolocation is not supported by your browser.");
     }
   }, []);
 
@@ -41,24 +41,23 @@ export const GPMap = () => {
     const gpsRaw = await gpsResponse.json();
     setGps(gpsRaw);
   }, [defaultLocation]);
-  
+
   return (
     <>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: "flex" }}>
         <div style={{ flex: 1 }}>
           {gps && (
             <GoogleMapReact
-              bootstrapURLKeys={{ key: "AIzaSyAkMDHxwIxN_S9g1S1KzfUW4ZjEIq6uq5Q" }}
+              bootstrapURLKeys={{
+                key: "AIzaSyAkMDHxwIxN_S9g1S1KzfUW4ZjEIq6uq5Q",
+              }}
               defaultCenter={defaultLocation}
               defaultZoom={defaultMapParams.zoom}
             >
-            {console.log('LOCATION', gps)}
-              <UserIcon
-                lat={defaultLocation.lat}
-                lng={defaultLocation.lng}
-              />
+              {console.log("LOCATION", gps)}
+              <UserIcon lat={defaultLocation.lat} lng={defaultLocation.lng} />
               {gps.map((gp: any) => (
-                // due to several GPS being located in close area (medical centres typically), some are stacked
+                // due to several GPs being located in close area (medical centres typically), some are stacked
                 <GPMapIcon
                   gp={gp}
                   lat={gp.location.lat}
@@ -69,8 +68,8 @@ export const GPMap = () => {
               ))}
             </GoogleMapReact>
           )}
-          </div>
-          {gps && <GPList gps={gps} selectGp={setSelectedGp} />}
+        </div>
+        {gps && <GPList gps={gps} selectGp={setSelectedGp} />}
       </div>
     </>
   );
@@ -81,24 +80,27 @@ interface GPListProps {
   selectGp: (gp: any) => void;
 }
 
-
 const GPList: React.FC<GPListProps> = ({ gps, selectGp }) => (
-  <div style={{ 
-    flex: 1, 
-    maxHeight: '100vh', 
-    overflow: 'auto',
-    backgroundColor: '#f5f5f5',
-    padding: '1rem',
-    boxShadow: '0 0 10px rgba(0,0,0,0.15)'
-  }}>
+  <div
+    style={{
+      flex: 1,
+      maxHeight: "100vh",
+      overflow: "auto",
+      backgroundColor: "#f5f5f5",
+      padding: "1rem",
+      boxShadow: "0 0 10px rgba(0,0,0,0.15)",
+    }}
+  >
     <h2>GPS Locations</h2>
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'start',
-    }}>
-      {gps.map((gp: any) => (
-        <button key={gp.location.lat} onClick={() => selectGp(gp)}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "start",
+      }}
+    >
+      {gps.map((gp: any, index: number) => (
+        <button key={index} onClick={() => selectGp(gp)}>
           {gp.name}
         </button>
       ))}
@@ -112,7 +114,7 @@ const GPMapIcon = ({ gp, isSelected }: any) => {
       icon={faUserMd}
       size="2x"
       className={styles.mapIcon}
-      color={isSelected ? 'red' : undefined}
+      color={isSelected ? "red" : undefined}
     ></FontAwesomeIcon>
   );
 };
