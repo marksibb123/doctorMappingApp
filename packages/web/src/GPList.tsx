@@ -34,7 +34,6 @@ export const runServer = async (): Promise<void> => {
 
   const client = new Client({});
 
-
   async function fetchPlaces(lat: number, lng: number, pageToken?: string, collectedPlaces: any[] = []): Promise<any[]> {
     const response = await client.placesNearby({
       params: {
@@ -43,7 +42,6 @@ export const runServer = async (): Promise<void> => {
         key: "AIzaSyAkMDHxwIxN_S9g1S1KzfUW4ZjEIq6uq5Q",
         rankby: PlacesNearbyRanking.distance,
         type: "health",
-        // The below parameter allows for 60 fetches to be retrieved
         pagetoken: pageToken,
       },
     });
@@ -51,6 +49,7 @@ export const runServer = async (): Promise<void> => {
     collectedPlaces = collectedPlaces.concat(response.data.results);
 
     if (response.data.next_page_token && collectedPlaces.length < 60) {
+      // Wait for a short delay then fetch the next page of results
       await new Promise((resolve) => setTimeout(resolve, 2000));
       return fetchPlaces(lat, lng, response.data.next_page_token, collectedPlaces);
     } else {
@@ -59,7 +58,6 @@ export const runServer = async (): Promise<void> => {
   }
 
   router.get("/gps", async (ctx) => {
-    
     const { lat, lng } = ctx.request.query;
 
     if (!lat || !lng) {

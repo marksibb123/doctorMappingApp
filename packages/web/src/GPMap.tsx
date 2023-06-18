@@ -17,7 +17,7 @@ export const GPMap = () => {
 
   const defaultMapParams = {
     center: defaultLocation,
-    zoom: 10,
+    zoom: 15,
   };
 
   useEffect(() => {
@@ -59,6 +59,7 @@ export const GPMap = () => {
               >
                 <UserIcon lat={defaultLocation.lat} lng={defaultLocation.lng} />
                 {gps.map((gp: any) => (
+                  // Due to medical centres having many GPs under one roof, there is overlapping of icons.
                   <GPMapIcon
                     gp={gp}
                     lat={gp.geometry.location.lat}
