@@ -40,6 +40,7 @@ export const runServer = async (): Promise<void> => {
       params: {
         location: { lat, lng },
         keyword: "doctor",
+        // this key will most likely need to be regenerated
         key: "AIzaSyAkMDHxwIxN_S9g1S1KzfUW4ZjEIq6uq5Q",
         rankby: PlacesNearbyRanking.distance,
         type: "health",
